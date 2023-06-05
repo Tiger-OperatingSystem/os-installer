@@ -1,0 +1,42 @@
+#!/bin/bash
+
+function getLanguage(){
+  language=$(
+    yad --borders=32 --text="<big><b>Escolha o idioma do sistema</b></big>\n" --list --fixed              \
+        --center --no-header --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"     \
+        "Português Brasileiro"                                                                            \
+        "Português Europeu"                                                                               \
+        "English"                                                                                         \
+        "Español" || exit 0
+  )
+}
+ 
+function getKeyboard(){
+  echo "TODO"
+}
+ 
+function getAccountDetails(){
+  account=$(
+    yad --borders=32 --text="<big><b>Criar o usuário administrador</b></big>\n"  --form --fixed \
+        --center --width=640 --height=480  --title="Tiger OS - Instalar sistema"                \
+        --field="\nNome completo     \n"                                                        \
+        --field=" ":lbl --field="Nome do usuário  "                                             \
+        --field=" ":lbl --field="Senha":H                                                       \
+        --field="Confirme a senha":H                                                            \
+        --field=" ":lbl "${@}" || exit 0
+  )
+}
+ 
+function getDisk(){
+  echo "TODO"
+}
+ 
+function doInstallation(){
+  echo "TODO"
+}
+ 
+getLanguage
+getKeyboard
+getAccountDetails
+getDisk
+doInstallation
