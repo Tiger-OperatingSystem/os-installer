@@ -1,12 +1,22 @@
 #!/bin/bash
 
+str_titulo_janela="Tiger OS - Instalar sistema"
+
+str_linguagem="Escolha o idioma do sistema"
+
+str_conta_descricao="Criar o usuário administrador"
+str_conta_nome_completo="Nome completo"
+str_conta_nome_usuario="Nome do usuário"
+str_conta_senha"Senha"
+str_conta_confirmar_senha="Confirme a senha"
+
 function getLanguage(){
   language=$(
-    yad --borders=32 --text="<big><b>Escolha o idioma do sistema</b></big>\n" --list --fixed              \
-        --center --no-header --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"     \
-        "Português Brasileiro"                                                                            \
-        "Português Europeu"                                                                               \
-        "English"                                                                                         \
+    yad --borders=32 --text="<big><b>${str_linguagem}</b></big>\n" --list --fixed                 \
+        --center --no-headers --column= --width=640 --height=480 --title="${str_titulo_janela}"   \
+        "Português Brasileiro"                                                                    \
+        "Português Europeu"                                                                       \
+        "English"                                                                                 \
         "Español" || exit 0
   )
 }
@@ -17,18 +27,24 @@ function getKeyboard(){
  
 function getAccountDetails(){
   account=$(
-    yad --borders=32 --text="<big><b>Criar o usuário administrador</b></big>\n"  --form --fixed \
-        --center --width=640 --height=480  --title="Tiger OS - Instalar sistema"                \
-        --field="\nNome completo     \n"                                                        \
-        --field=" ":lbl --field="Nome do usuário  "                                             \
-        --field=" ":lbl --field="Senha":H                                                       \
-        --field="Confirme a senha":H                                                            \
+    yad --borders=32 --text="<big><b>${str_conta_descricao}</b></big>\n"  --form --fixed  \
+        --center --width=640 --height=480  --title="${str_titulo_janela}"                 \
+        --field="\n${str_conta_nome_completo}     \n"                                     \
+        --field=" ":lbl --field="${str_conta_nome_usuario}  "                             \
+        --field=" ":lbl --field="${str_conta_senha}":H                                    \
+        --field="${str_conta_confirmar_senha}":H                                          \
         --field=" ":lbl "${@}" || exit 0
   )
 }
  
 function getDisk(){
-  echo "TODO"
+  method=$(
+    yad --borders=32 --text="<big><b>Escolha o método de instalação</b></big>\n" --list --fixed           \
+        --center --no-headers --column= --width=640 --height=480 --title="${str_titulo_janela}"    \
+        "Usar o disco inteiro"                                                                            \
+        "Usar uma partição"                                                                               \
+        "Avançado"  || exit 0
+  )
 }
  
 function doInstallation(){
