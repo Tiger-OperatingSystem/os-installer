@@ -36,6 +36,51 @@ function getAccountDetails(){
         --field=" ":lbl "${@}" || exit 0
   )
 }
+
+function getTimezone(){
+  area=$(
+    yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list  \
+        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="${str_titulo_janela}"         \
+        $(timedatectl list-timezones | awk '{print $0 " " strftime("%z", systime())}'                                                     \
+            | grep / | cut -d/ -f1 | sort | uniq        \
+            | sed "s|Africa|África|g"                   \
+            | sed "s|America|América|g"                 \
+            | sed "s|Antarctica|Horário da Antártica|g" \
+            | sed "s|Atlantic|Horário do Atlânco|g"     \
+            | sed "s|Arctic|Horário do Ártico|g"        \
+            | sed "s|Asia|Ásia|g"                       \
+            | sed "s|Australia|Áustrália|g"             \
+            | sed "s|Canada|Canadá|g"                   \
+            | sed "s|Chile|Chile|g"                     \
+            | sed "s|Etc|GMT|g"                         \
+            | sed "s|Indian|Índia|g"                    \
+            | sed "s|Mexico|México|g"                   \
+            | sed "s|Pacific|Horário do Pacífico|g"     \
+            | sed "s|US|EUA|g"                          \
+            | sed "s|Brazil|Brasil|g"                   \
+            | cat -n) || exit 0
+  )
+  
+  area=$(
+    timedatectl list-timezones | awk '{print $0 " " strftime("%z", systime())}' | grep / | cut -d/ -f1  \
+                               | sort | uniq | cat -n |  sed 's|^ *||g'                                 \
+                               | grep "^$(echo "${area}"                                                \
+                               | cut -d'|' -f1)"                                                        \
+                               | sed 's|^[0-9].*[[:space:]]||g'
+  )
+  
+  city=$(
+    yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list  \
+        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="${str_titulo_janela}"         \
+        $(timedatectl list-timezones | sort | uniq  | grep ${area}              \
+                                     | cut -d'/' -f2-99                         \
+                                     | sed 's|St_|St. |g;s|_| |g;s|Sao |São |g' \
+                                     | cat -n )|| exit 0
+  )
+  
+  area=$(timedatectl list-timezones | sort | uniq  | grep ${area} | sed -n $(echo ${city} |cut -d\| -f1)p)
+    
+}
  
 function getDisk(){
   method=$(
