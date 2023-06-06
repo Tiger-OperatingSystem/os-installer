@@ -92,10 +92,6 @@ function getDisk(){
   )
 }
  
-function doInstallation(){
-  echo "TODO"
-}
- 
 getLanguage
 getKeyboard
 getAccountDetails
