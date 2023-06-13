@@ -81,14 +81,23 @@ function getTimezone(){
   area=$(timedatectl list-timezones | sort | uniq  | grep ${area} | sed -n $(echo ${city} |cut -d\| -f1)p)
     
 }
- 
-function getDisk(){
+
+function getInstallMethod() {
   method=$(
     yad --borders=32 --text="<big><b>Escolha o método de instalação</b></big>\n" --list --fixed           \
-        --center --no-headers --column= --width=640 --height=480 --title="${str_titulo_janela}"    \
+        --center --no-headers --column= --width=640 --height=480 --title="${str_titulo_janela}"           \
         "Usar o disco inteiro"                                                                            \
         "Usar uma partição"                                                                               \
         "Avançado"  || exit 0
+  )
+}
+ 
+function getDisk(){
+  disk=$(
+    yad --borders=32 --text="<big><b>Escolha onde o Tiger 23 será instalado</b></big>\n" --list --fixed                  \
+        --center --width=640 --height=480 --title="${str_titulo_janela}"                                      \
+        --column="Dispositivo             " --column="Tamanho"                                                \
+        $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")  || exit 0
   )
 }
  
@@ -96,5 +105,5 @@ getLanguage
 getKeyboard
 getAccountDetails
 getTimezone
-getDisk
+getInstallMethod
 doInstallation
