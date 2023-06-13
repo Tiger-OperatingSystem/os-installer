@@ -90,6 +90,12 @@ function getInstallMethod() {
         "Usar uma partição"                                                                               \
         "Avançado"  || exit 0
   )
+  
+  [ "${method}" = "Avançado|" ] && {
+     gparted
+  }
+  
+  getDisk
 }
  
 function getDisk(){
@@ -99,6 +105,14 @@ function getDisk(){
         --column="Dispositivo             " --column="Tamanho"                                                \
         $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")  || exit 0
   )
+  
+  [ "${method}" = "Usar uma partição|" ] && {
+     getPartition
+  }
+}
+
+function getPartition(){
+
 }
  
 getLanguage
