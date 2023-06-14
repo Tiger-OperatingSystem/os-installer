@@ -117,7 +117,7 @@ function getPartition(){
     yad --borders=32 --text="<big><b>Escolha a partição onde o Tiger 23 será instalado</b></big>\n" --list --fixed  \
         --center --width=640 --height=480 --title="${str_titulo_janela}"                                            \
         --column="Dispositivo             " --column="Tamanho"                                                      \
-        $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")  | cut -d\| -f1  \
+        $(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g')  | cut -d\| -f1  \
         || exit 0
   )
 }
