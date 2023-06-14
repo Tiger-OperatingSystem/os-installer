@@ -100,10 +100,11 @@ function getInstallMethod() {
  
 function getDisk(){
   disk=$(
-    yad --borders=32 --text="<big><b>Escolha onde o Tiger 23 será instalado</b></big>\n" --list --fixed                  \
-        --center --width=640 --height=480 --title="${str_titulo_janela}"                                      \
-        --column="Dispositivo             " --column="Tamanho"                                                \
-        $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")  || exit 0
+    yad --borders=32 --text="<big><b>Escolha onde o Tiger 23 será instalado</b></big>\n" --list --fixed             \
+        --center --width=640 --height=480 --title="${str_titulo_janela}"                                            \
+        --column="Dispositivo             " --column="Tamanho"                                                      \
+        $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")  | cut -d\| -f1  \
+        || exit 0
   )
   
   [ "${method}" = "Usar uma partição|" ] && {
@@ -112,7 +113,13 @@ function getDisk(){
 }
 
 function getPartition(){
-
+  sys_part=$(
+    yad --borders=32 --text="<big><b>Escolha a partição onde o Tiger 23 será instalado</b></big>\n" --list --fixed  \
+        --center --width=640 --height=480 --title="${str_titulo_janela}"                                            \
+        --column="Dispositivo             " --column="Tamanho"                                                      \
+        $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")  | cut -d\| -f1  \
+        || exit 0
+  )
 }
  
 getLanguage
