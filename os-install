@@ -4,8 +4,8 @@ str_titulo_janela="Tiger OS - Instalar sistema"
 
 str_linguagem="Escolha o idioma do sistema"
 
-str_conta_descricao="Criar o usuário administrador"
-str_conta_nome_completo="Nome completo"
+str_conta_descricao="Criar o usuário administrador, essa senha será utilizada para instalar programas"
+str_conta_nome_completo="Nome da empresa"
 str_conta_nome_usuario="Nome do usuário"
 str_conta_senha="Senha"
 str_conta_confirmar_senha="Confirme a senha"
