@@ -7,7 +7,7 @@ str_linguagem="Escolha o idioma do sistema"
 str_conta_descricao="Criar o usuário administrador"
 str_conta_nome_completo="Nome completo"
 str_conta_nome_usuario="Nome do usuário"
-str_conta_senha"Senha"
+str_conta_senha="Senha"
 str_conta_confirmar_senha="Confirme a senha"
 
 function getLanguage(){
