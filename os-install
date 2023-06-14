@@ -110,6 +110,10 @@ function getDisk(){
   [ "${method}" = "Usar uma partição|" ] && {
      getPartition
   }
+  
+  [ "${method}" = "Avançado|" ] && {
+     getPartition
+  }
 }
 
 function getPartition(){
