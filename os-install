@@ -113,11 +113,21 @@ function getDisk(){
 }
 
 function getPartition(){
+  partitions_list=$(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g')
+  
+  [ "${partitions_list}" = "" ] && {
+    yad --borders=32 --text="<big><b>O Disco ${disk} não possui partições</b>\nSelecione \"Usar o disco inteiro\" ou crie as partições no modo \"Avançado\" antes</big>\n" --list --fixed             \
+        --center --width=640 --title="${str_titulo_janela}"
+        
+    getInstallMethod
+    return
+  }
+
   sys_part=$(
     yad --borders=32 --text="<big><b>Escolha a partição onde o Tiger 23 será instalado</b></big>\n" --list --fixed  \
         --center --width=640 --height=480 --title="${str_titulo_janela}"                                            \
         --column="Dispositivo             " --column="Tamanho"                                                      \
-        $(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g')  | cut -d\| -f1  \
+        $(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g') | grep "${disk}" | cut -d\| -f1  \
         || exit 0
   )
 }
