@@ -16,8 +16,14 @@ function getKeyboard(){
 }
  
 function getAccountDetails(){
+  erro_validacao="${1}"; shift
+  
+  [ "${erro_validacao}" = "" ] && {
+    erro_validacao="Essa senha será utilizada para instalar programas"
+  }
+  
   account=$(
-    yad --borders=32 --text="<big><b>Criar o usuário administrador</b>\n<small>Essa senha será utilizada para instalar programas</small>\n"  --form --fixed  \
+    yad --borders=32 --text="<big><b>Criar o usuário administrador</b></big>\n<small>${erro_validacao} </small>\n"  --form --fixed  \
         --center --width=640 --height=480  --title="Tiger OS - Instalar sistema"                 \
         --field="\nNome da empresa     \n"                                     \
         --field=" ":lbl --field="Nome de usuário  "                             \
@@ -25,6 +31,44 @@ function getAccountDetails(){
         --field="Confirme a senha":H                                          \
         --field=" ":lbl "${@}" || exit 0
   )
+  
+  user_fullname=$(echo ${account} | cut -d\| -f1)
+  user_name=$(echo ${account}     | cut -d\| -f3)
+  
+  user_password=$(echo ${account} | cut -d\| -f5)
+  test_password=$(echo ${account} | cut -d\| -f6)
+  
+  [ "${user_name}" = "root" ] && {
+    getAccountDetails '<b>Erro:</b> root é um nome reservado' "${user_fullname}" "" "" "" "${user_password}" "${test_password}"
+  }
+  
+  [ "${user_name}" = "" ] && {
+    getAccountDetails '<b>Erro:</b> Faltou o nome de usuário' "${user_fullname}" "" "${user_name}" "" "${user_password}" "${test_password}"
+  }
+  
+  user_name_valid=$(echo "${user_name}" | iconv -t ASCII//TRANSLIT | tr '[:upper:]' '[:lower:]' \
+                                        | tr ' ' '_' | sed 's|[^a-zA-Z0-9_-]||g;s|^-|_|g')
+                                        
+  [ ! "${user_name}" = "${user_name_valid}" ] && {
+    yad --borders=32 --text="<big><b>Nome '${user_name}' não é válido como nome de usuário</b>\n\n O instalador sugere <b>${user_name_valid}</b>, deseja utilizar?</big>\n" --list --fixed             \
+        --center --width=640 --title="Tiger OS - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0 \
+        || {
+          getAccountDetails '<b>Erro:</b> Nome de usuário inválido' "${user_fullname}" "" "${user_name_valid}" "" "${user_password}" "${test_password}"
+          return
+        }
+    
+    user_name="${user_name_valid}"
+  }
+  
+  [ "${user_password}" = "" ] && {
+    getAccountDetails '<b>Erro:</b> Faltou a senha' "${user_fullname}" "" "${user_name}" "" "" ""
+  }
+  
+  [ ! "${user_password}" = "${test_password}" ] && {
+    getAccountDetails "<b>Erro:</b> Senhas não conferem" "${user_fullname}" "" "${user_name}" 
+    return
+  }
+  
 }
 
 function getTimezone(){
