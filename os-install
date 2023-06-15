@@ -1,19 +1,9 @@
 #!/bin/bash
 
-str_titulo_janela="Tiger OS - Instalar sistema"
-
-str_linguagem="Escolha o idioma do sistema"
-
-str_conta_descricao="Criar o usuário administrador, essa senha será utilizada para instalar programas"
-str_conta_nome_completo="Nome da empresa"
-str_conta_nome_usuario="Nome do usuário"
-str_conta_senha="Senha"
-str_conta_confirmar_senha="Confirme a senha"
-
 function getLanguage(){
   language=$(
-    yad --borders=32 --text="<big><b>${str_linguagem}</b></big>\n" --list --fixed                 \
-        --center --no-headers --column= --width=640 --height=480 --title="${str_titulo_janela}"   \
+    yad --borders=32 --text="<big><b>Escolha o idioma do sistema</b></big>\n" --list --fixed                 \
+        --center --no-headers --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"   \
         "Português Brasileiro"                                                                    \
         "Português Europeu"                                                                       \
         "English"                                                                                 \
@@ -27,12 +17,12 @@ function getKeyboard(){
  
 function getAccountDetails(){
   account=$(
-    yad --borders=32 --text="<big><b>${str_conta_descricao}</b></big>\n"  --form --fixed  \
-        --center --width=640 --height=480  --title="${str_titulo_janela}"                 \
-        --field="\n${str_conta_nome_completo}     \n"                                     \
-        --field=" ":lbl --field="${str_conta_nome_usuario}  "                             \
-        --field=" ":lbl --field="${str_conta_senha}":H                                    \
-        --field="${str_conta_confirmar_senha}":H                                          \
+    yad --borders=32 --text="<big><b>Criar o usuário administrador</b>\n<small>Essa senha será utilizada para instalar programas</small>\n"  --form --fixed  \
+        --center --width=640 --height=480  --title="Tiger OS - Instalar sistema"                 \
+        --field="\nNome da empresa     \n"                                     \
+        --field=" ":lbl --field="Nome de usuário  "                             \
+        --field=" ":lbl --field="Senha de acesso":H                                    \
+        --field="Confirme a senha":H                                          \
         --field=" ":lbl "${@}" || exit 0
   )
 }
@@ -40,7 +30,7 @@ function getAccountDetails(){
 function getTimezone(){
   area=$(
     yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list  \
-        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="${str_titulo_janela}"         \
+        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"         \
         $(timedatectl list-timezones | awk '{print $0 " " strftime("%z", systime())}'                                                     \
             | grep / | cut -d/ -f1 | sort | uniq        \
             | sed "s|Africa|África|g"                   \
@@ -71,7 +61,7 @@ function getTimezone(){
   
   city=$(
     yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list  \
-        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="${str_titulo_janela}"         \
+        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"         \
         $(timedatectl list-timezones | sort | uniq  | grep ${area}              \
                                      | cut -d'/' -f2-99                         \
                                      | sed 's|St_|St. |g;s|_| |g;s|Sao |São |g' \
@@ -85,7 +75,7 @@ function getTimezone(){
 function getInstallMethod() {
   method=$(
     yad --borders=32 --text="<big><b>Escolha o método de instalação</b></big>\n" --list --fixed           \
-        --center --no-headers --column= --width=640 --height=480 --title="${str_titulo_janela}"           \
+        --center --no-headers --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"           \
         "Usar o disco inteiro"                                                                            \
         "Usar uma partição"                                                                               \
         "Avançado"  || exit 0
@@ -101,7 +91,7 @@ function getInstallMethod() {
 function getDisk(){
   disk=$(
     yad --borders=32 --text="<big><b>Escolha onde o Tiger 23 será instalado</b></big>\n" --list --fixed             \
-        --center --width=640 --height=480 --title="${str_titulo_janela}"                                            \
+        --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"                                            \
         --column="Dispositivo             " --column="Tamanho"                                                      \
         $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")  | cut -d\| -f1  \
         || exit 0
@@ -121,7 +111,7 @@ function getPartition(){
   
   [ "${partitions_list}" = "" ] && {
     yad --borders=32 --text="<big><b>O Disco ${disk} não possui partições</b>\nSelecione \"Usar o disco inteiro\" ou crie as partições no modo \"Avançado\" antes</big>\n" --list --fixed             \
-        --center --width=640 --title="${str_titulo_janela}"
+        --center --width=640 --title="Tiger OS - Instalar sistema"
         
     getInstallMethod
     return
@@ -129,7 +119,7 @@ function getPartition(){
 
   sys_part=$(
     yad --borders=32 --text="<big><b>Escolha a partição onde o Tiger 23 será instalado</b></big>\n" --list --fixed  \
-        --center --width=640 --height=480 --title="${str_titulo_janela}"                                            \
+        --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"                                            \
         --column="Dispositivo             " --column="Tamanho"                                                      \
         $(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g') | grep "${disk}" | cut -d\| -f1  \
         || exit 0
