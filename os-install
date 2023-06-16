@@ -35,7 +35,7 @@ keyboard_variation=$(
     yad --borders=32 --text="<big><b>Escolha O idioma do seu teclado</b></big>\n" --list  \
         --fixed --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"         \
         br "Tradicional" \
-        ${variations} | cut -d'|' -f2 || exit 0
+        ${variations} | cut -d'|' -f2 || { getKeyboard; return; }
   )
 
 keyboard_layout=${keyboard_layout}_${keyboard_variation}
@@ -137,7 +137,7 @@ function getTimezone(){
         $(timedatectl list-timezones | sort | uniq  | grep ${area}              \
                                      | cut -d'/' -f2-99                         \
                                      | sed 's|St_|St. |g;s|_| |g;s|Sao |São |g' \
-                                     | cat -n )|| exit 0
+                                     | cat -n )|| { getTimezone; return; }
   )
   
   area=$(timedatectl list-timezones | sort | uniq  | grep ${area} | sed -n $(echo ${city} |cut -d\| -f1)p)
@@ -166,7 +166,7 @@ function getDisk(){
         --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"                                            \
         --column="Dispositivo             " --column="Tamanho"                                                      \
         $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")  | cut -d\| -f1  \
-        || exit 0
+        || { getInstallMethod; return; }
   )
   
   [ "${method}" = "Usar uma partição|" ] && {
@@ -194,7 +194,7 @@ function getPartition(){
         --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"                                            \
         --column="Dispositivo             " --column="Tamanho"                                                      \
         $(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g') | grep "${disk}" | cut -d\| -f1  \
-        || exit 0
+        || || { getDisk; return; }
   )
 }
  
