@@ -12,6 +12,34 @@ function getLanguage(){
 }
  
 function getKeyboard(){
+layouts=$(grep -A9999 '! layout' /usr/share/X11/xkb/rules/evdev.lst | sed -n 2,9999p)
+layouts=$(echo "${layouts}" | sed -n 1,$(echo "${layouts}" | grep -m1 -n '!' | cut -d: -f1)p \
+                            | grep -Ev '!|^$|custom' \
+                            | sed 's|Portuguese|Português|g;s|Spanish|Español|g;s| (|§(|g'\
+                            | sed ':l s/\(([^ )]*\)[ ]/\1§/;tl'\
+                            | sed 's|§| |g' | awk '{print $2,$1}' | sort)
+
+variations=$(grep -A9999 '! variant' /usr/share/X11/xkb/rules/evdev.lst | sed -n 2,9999p)
+variations=$(echo "${variations}" | sed -n 1,$(echo "${variations}" | grep -m1 -n '!' | cut -d: -f1)p \
+                                  | grep -Ev '!|^$|custom' \
+                                  | sed ':l s/\(([^ )]*\)[ ]/\1§/;tl' | sed 's| (|§(|g'\
+                                  | sed 's|§| |g' | grep "${keyboard_layout}": | awk '{print $1,$3}' | sort)
+
+keyboard_layout=$(
+    yad --borders=32 --text="<big><b>Escolha O idioma do seu teclado</b></big>\n" --list  \
+        --fixed --hide-column=2 --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"         \
+        ${layouts} | cut -d'|' -f2 || exit 0
+  )
+
+keyboard_variation=$(
+    yad --borders=32 --text="<big><b>Escolha O idioma do seu teclado</b></big>\n" --list  \
+        --fixed --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"         \
+        br "Tradicional" \
+        ${variations} | cut -d'|' -f2 || exit 0
+  )
+
+keyboard_layout=${keyboard_layout}_${keyboard_variation}
+
   echo "TODO"
 }
  
