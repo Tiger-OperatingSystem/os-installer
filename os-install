@@ -152,7 +152,7 @@ function getTimezone(){
                                      | cat -n )|| { getTimezone; return; }
   )
   
-  area=$(timedatectl list-timezones | sort | uniq  | grep ${area} | sed -n $(echo ${city} |cut -d\| -f1)p)
+  timezone=$(timedatectl list-timezones | sort | uniq  | grep ${area} | sed -n $(echo ${city} |cut -d\| -f1)p)
     
 }
 
@@ -229,7 +229,19 @@ function doInstallation(){
       sys_part="${disk}p2"
     }
   }
-  echo "TODO"
+  
+  sudo linstaller-backend                           \
+    --target-partition=${sys_part}                  \
+    --efi-partition=${efi_part}                     \
+    --user-name="${user_name}"                      \
+    --user-password="${user_password}"              \
+    --squashfs="/cdrom/casper/filesystem.squashfs"  \
+    --hostname="${host_name}"                       \
+    --timezone="${timezone}"                        \
+    --keyboard-map="${keyboard_layout}"             \
+    --target-disk=/dev/sda                          \
+    --language=${language}                        | \
+      yad --progress --pulsate --auto-close "Preparando o disco ${disk}, aguarde"  --width=640 --borders=32 --undecorated --center --no-buttons
 }
  
 getLanguage
