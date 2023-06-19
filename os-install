@@ -197,6 +197,10 @@ function getPartition(){
         || || { getDisk; return; }
   )
 }
+
+function getInstallMethod(){
+  echo "TODO"
+}
  
 getLanguage
 getKeyboard
