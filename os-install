@@ -212,6 +212,23 @@ function getPartition(){
 }
 
 function doInstallation(){
+  [ "${method}" = "Usar o disco inteiro|" ] && {
+    sudo linstaller-fulldisk-setup --filesystem=ext4 "${disk}" | \
+      yad --progress --pulsate --auto-close "Preparando o disco ${disk}, aguarde"  --width=640 --borders=32 --undecorated --center --no-buttons
+      
+    sys_part="${disk}2"
+    efi_part="${disk}1"
+    
+    echo "${disk}" | grep "^/dev/nvme" && {
+      efi_part="${disk}p1"
+      sys_part="${disk}p2"
+    }
+    
+    echo "${disk}" | grep "^/dev/mmcblk" && {
+      efi_part="${disk}p1"
+      sys_part="${disk}p2"
+    }
+  }
   echo "TODO"
 }
  
@@ -220,4 +237,5 @@ getKeyboard
 getAccountDetails
 getTimezone
 getInstallMethod
+confirmOptions
 doInstallation
