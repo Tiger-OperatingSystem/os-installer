@@ -2,11 +2,11 @@
 
 function getLanguage(){
   language=$(
-    yad --borders=32 --text="<big><b>Escolha o idioma do sistema</b></big>\n" --list --fixed                 \
+    yad --borders=32 --text="<big><b>Escolha o idioma do sistema</b></big>\n" --list --fixed             \
         --center --no-headers --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"   \
-        "Português Brasileiro"                                                                    \
-        "Português Europeu"                                                                       \
-        "English"                                                                                 \
+        "Português Brasileiro"                                                                           \
+        "Português Europeu"                                                                              \
+        "English"                                                                                        \
         "Español" || exit 0
   )
 }
@@ -21,8 +21,8 @@ function getKeyboard(){
                               | sed 's|§| |g' | awk '{print $2,$1}' | sort)
 
   keyboard_language=$(
-    yad --borders=32 --text="<big><b>Escolha O idioma do seu teclado</b></big>\n" --list  \
-        --fixed --hide-column=2 --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"         \
+    yad --borders=32 --text="<big><b>Escolha O idioma do seu teclado</b></big>\n" --list  --width=640 --height=480  \
+        --fixed --hide-column=2 --center --no-headers --column= --column=  --title="Tiger OS - Instalar sistema"    \
         ${layouts} || exit 0
   )
   
@@ -30,14 +30,14 @@ function getKeyboard(){
   
   variations=""
   variations=$(grep -A9999 '! variant' /usr/share/X11/xkb/rules/evdev.lst | sed -n 2,9999p)
-  variations=$(echo "${variations}" | sed -n 1,$(echo "${variations}" | grep -m1 -n '!' | cut -d: -f1)p \
-                                    | grep -Ev '!|^$|custom' \
-                                    | sed ':l s/\(([^ )]*\)[ ]/\1§/;tl' | sed 's| (|§(|g'\
-                                    | sed 's|§| |g' | grep "${keyboard_language}": | awk '{print $1,$3}' | sort)
+  variations=$(echo "${variations}" | sed -n 1,$(echo "${variations}" | grep -m1 -n '!' | cut -d: -f1)p          \
+                                    | grep -Ev '!|^$|custom'                                                     \
+                                    | sed ':l s/\(([^ )]*\)[ ]/\1§/;tl' | sed 's| (|§(|g'                        \
+                                    | sed 's|§| |g' | grep "${keyboard_language}": | awk '{print $1,$3}' | sort  )
 
   keyboard_variation=$(
-    yad --borders=32 --text="<big><b>Escolha a variação de layout</b></big>\n" --list  \
-        --fixed --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"         \
+    yad --borders=32 --text="<big><b>Escolha a variação de layout</b></big>\n" --list                                     \
+        --fixed --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"  \
         "      " "Tradicional" \
         ${variations} || { getKeyboard; return; }
   )
@@ -63,12 +63,12 @@ function getAccountDetails(){
   }
   
   account=$(
-    yad --borders=32 --text="<big><b>Criar o usuário administrador</b></big>\n<small>${erro_validacao} </small>\n"  --form --fixed  \
-        --center --width=640 --height=480  --title="Tiger OS - Instalar sistema"                 \
-        --field="\nNome da empresa     \n"                                     \
-        --field=" ":lbl --field="Nome de usuário  "                             \
-        --field=" ":lbl --field="Senha de acesso":H                                    \
-        --field="Confirme a senha":H                                          \
+    yad --borders=32 --text="<big><b>Criar o usuário administrador</b></big>\n<small>${erro_validacao} </small>\n"    \
+        --form --fixed --center --width=640 --height=480  --title="Tiger OS - Instalar sistema"                       \
+        --field="\nNome da empresa     \n"                                                                            \
+        --field=" ":lbl --field="Nome de usuário  "                                                                   \
+        --field=" ":lbl --field="Senha de acesso":H                                                                   \
+        --field="Confirme a senha":H                                                                                  \
         --field=" ":lbl "${@}" || exit 0
   )
   
@@ -90,8 +90,8 @@ function getAccountDetails(){
                                         | tr ' ' '_' | sed 's|[^a-zA-Z0-9_-]||g;s|^-|_|g')
                                         
   [ ! "${user_name}" = "${user_name_valid}" ] && {
-    yad --borders=32 --text="<big><b>Nome '${user_name}' não é válido como nome de usuário</b>\n\n O instalador sugere <b>${user_name_valid}</b>, deseja utilizar?</big>\n" --list --fixed             \
-        --center --width=640 --title="Tiger OS - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0 \
+    yad --text="<big><b>Nome '${user_name}' não é válido como nome de usuário</b>\n\n O instalador sugere <b>${user_name_valid}</b>, deseja utilizar?</big>\n"  \
+        --borders=32 --list --fixed  --center --width=640 --title="Tiger OS - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0                             \
         || {
           getAccountDetails '<b>Erro:</b> Nome de usuário inválido' "${user_fullname}" "" "${user_name_valid}" "" "${user_password}" "${test_password}"
           return
@@ -113,9 +113,9 @@ function getAccountDetails(){
 
 function getTimezone(){
   area=$(
-    yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list  \
-        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"         \
-        $(timedatectl list-timezones | awk '{print $0 " " strftime("%z", systime())}'                                                     \
+    yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list    \
+        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"    \
+        $(timedatectl list-timezones | awk '{print $0 " " strftime("%z", systime())}'                                                       \
             | grep / | cut -d/ -f1 | sort | uniq        \
             | sed "s|Africa|África|g"                   \
             | sed "s|America|América|g"                 \
@@ -144,8 +144,8 @@ function getTimezone(){
   )
   
   city=$(
-    yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list  \
-        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"         \
+    yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list   \
+        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"   \
         $(timedatectl list-timezones | sort | uniq  | grep ${area}              \
                                      | cut -d'/' -f2-99                         \
                                      | sed 's|St_|St. |g;s|_| |g;s|Sao |São |g' \
@@ -159,7 +159,7 @@ function getTimezone(){
 function getInstallMethod() {
   method=$(
     yad --borders=32 --text="<big><b>Escolha o método de instalação</b></big>\n" --list --fixed           \
-        --center --no-headers --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"           \
+        --center --no-headers --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"    \
         "Usar o disco inteiro"                                                                            \
         "Usar uma partição"                                                                               \
         "Avançado"  || exit 0
@@ -176,12 +176,14 @@ function getInstallMethod() {
  
 function getDisk(){
   disk=$(
-    yad --borders=32 --text="<big><b>Escolha onde o Tiger 23 será instalado</b></big>\n" --list --fixed             \
-        --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"                                            \
-        --column="Dispositivo             " --column="Tamanho"                                                      \
-        $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")  | cut -d\| -f1  \
+    yad --borders=32 --text="<big><b>Escolha onde o Tiger 23 será instalado</b></big>\n" --list --fixed   \
+        --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"                           \
+        --column="Dispositivo             " --column="Tamanho"                                            \
+        $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")        \
         || { getInstallMethod; return; }
   )
+  
+  disk=$(echo ${disk} | cut -d\| -f1)
   
   [ "${method}" = "Usar uma partição|" ] && {
      getPartition
