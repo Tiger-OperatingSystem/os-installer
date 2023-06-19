@@ -158,10 +158,10 @@ function getTimezone(){
 
 function getInstallMethod() {
   method=$(
-    yad --borders=32 --text="<big><b>Escolha o método de instalação</b></big>\n" --list --fixed           \
-        --center --no-headers --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"    \
-        "Usar o disco inteiro"                                                                            \
-        "Usar uma partição"                                                                               \
+    yad --borders=32 --text="<big><b>Escolha o método de instalação</b></big>\n<small>${1} </small>\n" --list --fixed   \
+        --center --no-headers --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"                \
+        "Usar o disco inteiro"                                                                                        \
+        "Usar uma partição"                                                                                           \
         "Avançado"  || exit 0
   )
   
@@ -180,7 +180,7 @@ function getDisk(){
         --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"                           \
         --column="Dispositivo             " --column="Tamanho"                                            \
         $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")        \
-        || { getInstallMethod; return; }
+        || { getInstallMethod ""; return; }
   )
   
   disk=$(echo ${disk} | cut -d\| -f1)
@@ -198,10 +198,7 @@ function getPartition(){
   partitions_list=$(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g')
   
   [ "${partitions_list}" = "" ] && {
-    yad --borders=32 --text="<big><b>O Disco ${disk} não possui partições</b>\nSelecione \"Usar o disco inteiro\" ou crie as partições no modo \"Avançado\" antes</big>\n" --list --fixed             \
-        --center --width=640 --title="Tiger OS - Instalar sistema"
-        
-    getInstallMethod
+    getInstallMethod "<b>Erro:</b> O Disco ${disk} não possui partições, para usar esse disco, escolha \"Avançado\"\npara criar as instalações ou use o disco inteiro"
     return
   }
 
