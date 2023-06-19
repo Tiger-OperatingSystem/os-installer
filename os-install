@@ -1,16 +1,20 @@
 #!/bin/bash
 
+host_name="Tiger_Machine"
+
 function getLanguage(){
   language=$(
-    yad --borders=32 --text="<big><b>Escolha o idioma do sistema</b></big>\n" --list --fixed             \
-        --center --no-headers --column= --width=640 --height=480 --title="Tiger OS - Instalar sistema"   \
-        "Português Brasileiro"                                                                           \
-        "Português Europeu"                                                                              \
-        "English"                                                                                        \
-        "Español" || exit 0
+    yad --borders=32 --text="<big><b>Escolha o idioma do sistema</b></big>\n" --list --fixed --column=    \
+        --center --no-headers --column=  --width=640 --height=480 --title="Tiger OS - Instalar sistema"   \
+        "pt_BR" "Português Brasileiro"                                                                    \
+        "pt" "Português Europeu"                                                                          \
+        "en" "English"                                                                                    \
+        "es" "Español" --hide-column=1 || exit 0
   )
+  
+  language=$(echo "${language}" | cut -d'|' -f1)
 }
- 
+
 function getKeyboard(){
   layouts=""
   layouts=$(grep -A9999 '! layout' /usr/share/X11/xkb/rules/evdev.lst | sed -n 2,9999p)
