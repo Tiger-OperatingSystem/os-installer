@@ -215,6 +215,21 @@ function getPartition(){
   )
 }
 
+function confirmOptions() {
+   summary="\n"
+   summary="${summary} - Definir o idioma como ${language_name} e:\n"
+   summary="${summary} - Definir o layout de teclado como ${keyboard_layout} e:\n"
+   summary="${summary} - Criar o usuário ${user_name} como administrador\n"
+   #[ "" = ""] && {
+     summary="${summary} - APAGAR todos os dados em ${disk} e:\n"
+     summary="${summary}   - Criar uma partição EFI de 512 MB\n"
+     summary="${summary}   - Criar uma partição EXT4 usando o resto do espaço\n"
+   #}
+   
+   yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field=""  \
+        --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prossiguir":0
+}
+
 function doInstallation(){
   [ "${method}" = "Usar o disco inteiro|" ] && {
     sudo linstaller-fulldisk-setup --filesystem=ext4 "${disk}" | \
@@ -246,6 +261,8 @@ function doInstallation(){
     --target-disk=/dev/sda                          \
     --language=${language}                        | \
       yad --progress --pulsate --auto-close "Preparando o disco ${disk}, aguarde"  --width=640 --borders=32 --undecorated --center --no-buttons
+      
+ 
 }
  
 getLanguage
