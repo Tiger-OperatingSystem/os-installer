@@ -198,7 +198,7 @@ function getPartition(){
   )
 }
 
-function getInstallMethod(){
+function doInstallation(){
   echo "TODO"
 }
  
