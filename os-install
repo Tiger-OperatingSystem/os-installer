@@ -54,8 +54,6 @@ function getKeyboard(){
   echo " Language: ${keyboard_language}"
   echo "Variation: ${keyboard_variation}"
 }
-
-getKeyboard
  
 function getAccountDetails(){
   erro_validacao="${1}"; shift
