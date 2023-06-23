@@ -227,7 +227,7 @@ function confirmOptions() {
    #}
    
    yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field=""  \
-        --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prossiguir":0
+        --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0
 }
 
 function doInstallation(){
