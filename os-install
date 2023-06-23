@@ -8,8 +8,7 @@ function getLanguage(){
         --center --no-headers --column=  --width=640 --height=480 --title="Tiger OS - Instalar sistema"   \
         "pt_BR" "Português Brasileiro"                                                                    \
         "pt" "Português Europeu"                                                                          \
-        "en" "English"                                                                                    \
-        "es" "Español" --hide-column=1 || exit 0
+        --hide-column=1 || exit 0
   )
   
   language=$(echo "${language}" | cut -d'|' -f1)
@@ -233,7 +232,7 @@ function confirmOptions() {
 function doInstallation(){
   [ "${method}" = "Usar o disco inteiro|" ] && {
     sudo linstaller-fulldisk-setup --filesystem=ext4 "${disk}" | \
-      yad --progress --pulsate --auto-close "Preparando o disco ${disk}, aguarde"  --width=640 --borders=32 --undecorated --center --no-buttons
+      yad --progress --pulsate --auto-close --text="<big><b> o disco ${disk}, aguarde</b></big>\n\n"  --width=640 --borders=32 --undecorated --center --no-buttons
       
     sys_part="${disk}2"
     efi_part="${disk}1"
@@ -260,11 +259,16 @@ function doInstallation(){
     --keyboard-map="${keyboard_layout}"             \
     --target-disk=/dev/sda                          \
     --language=${language}                        | \
-      yad --progress --pulsate --auto-close "Preparando o disco ${disk}, aguarde"  --width=640 --borders=32 --undecorated --center --no-buttons
+      yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
+      --text="<big><b>Extraindo a imagem do Tiger OS aguarde</b></big>\n\n"
       
- 
+  yad --borders=32 --text="<big><b>Tiger OS instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
+      --center --width=640 --title="Tiger OS - Instalar sistema"  --button="Ok":0
 }
- 
+
+yad --borders=32 --text="<big><b>Bem vindo(a) a Instalação do Tiger OS</b></big>\nVocê será guiado(a) no passo a passo para a correta instalação\ndo sistema, seja como sistema único ou em dual boot\n\nCaso tenha alguma dúvida assista a videoaula na área de trabalho\nVamos começar?\n" --form --fixed  \
+      --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"  --button=gtk-no:0 --button=gtk-yes:0
+
 getLanguage
 getKeyboard
 getAccountDetails
