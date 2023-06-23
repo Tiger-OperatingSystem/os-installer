@@ -266,7 +266,7 @@ function doInstallation(){
       --center --width=640 --title="Tiger OS - Instalar sistema"  --button="Ok":0
 }
 
-yad --borders=32 --text="<big><b>Bem vindo(a) a Instalação do Tiger OS</b></big>\nVocê será guiado(a) no passo a passo para a correta instalação\ndo sistema, seja como sistema único ou em dual boot\n\nCaso tenha alguma dúvida assista a videoaula na área de trabalho\nVamos começar?\n" --form --fixed  \
+yad --borders=32 --text="<big><b>Bem vindo(a) a Instalação do Tiger OS</b></big>\n\nVocê será guiado(a) no passo a passo para a correta instalação\ndo sistema, seja como sistema único ou em dual boot\n\nCaso tenha alguma dúvida assista a videoaula na área de trabalho\nVamos começar?\n" --form --fixed  \
       --center --width=640 --height=480 --title="Tiger OS - Instalar sistema"  --button=gtk-no:0 --button=gtk-yes:0
 
 getLanguage
