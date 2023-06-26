@@ -12,9 +12,25 @@ function getLanguage(){
   )
   
   language=$(echo "${language}" | cut -d'|' -f1)
+  language_descritive=$(echo "${language}" | cut -d'|' -f1)
+
+  [ "${language}" = "pt_BR" ] && {
+    keyboard_language="br"
+  }
+
+  [ "${language}" = "pt" ] && {
+    keyboard_language="pt"
+  }
 }
 
 function getKeyboard(){
+  yad --text="<big><b>O idioma do teclado está definido como '${language_descritive}'</b>\n\nDeseja alterar?</big>\n"  \
+        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-yes:0  \
+        || {
+          getKeyboardVariation
+          return
+        }
+
   layouts=""
   layouts=$(grep -A9999 '! layout' /usr/share/X11/xkb/rules/evdev.lst | sed -n 2,9999p)
   layouts=$(echo "${layouts}" | sed -n 1,$(echo "${layouts}" | grep -m1 -n '!' | cut -d: -f1)p \
@@ -30,6 +46,11 @@ function getKeyboard(){
   )
   
   keyboard_language=$(echo "${keyboard_language}" | cut -d'|' -f2)
+
+  getKeyboardVariation
+}
+
+function getKeyboardVariation() {
   
   variations=""
   variations=$(grep -A9999 '! variant' /usr/share/X11/xkb/rules/evdev.lst | sed -n 2,9999p)
