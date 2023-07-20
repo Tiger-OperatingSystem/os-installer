@@ -249,8 +249,11 @@ function confirmOptions() {
      summary="${summary}   - Criar uma partição EXT4 usando o resto do espaço\n"
    #}
    
-   yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field="" --field="Fazer login automaticamente":CHK  \
-        --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0
+   data=$(yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field="" --field="Fazer login automaticamente":CHK  \
+        --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n")
+
+   host_name=$(echo "${data}" | sed -n 1p)
+   autologin=$(echo "${data}" | sed -n 2p)
 }
 
 function doInstallation(){
