@@ -2,8 +2,8 @@
 Version=1.0
 Type=Application
 Name=Instalador do TigerOS 23.1
-Exec=os-installer
+Exec=os-install
 Icon=tigerInstall
-Path=os-install
+Categories=System;
 Terminal=false
 StartupNotify=false
