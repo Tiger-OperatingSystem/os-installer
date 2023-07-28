@@ -8,8 +8,9 @@ function getLanguage(){
         --center --no-headers --column=  --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"   \
         "pt_BR" "Português Brasileiro"                                                                    \
         "pt" "Português Europeu"                                                                          \
-        --hide-column=1 || exit 0
-  )
+        --hide-column=1)
+
+  botao=$?
 
   language_descritive=$(echo "${language}" | cut -d'|' -f2)
   language=$(echo "${language}" | cut -d'|' -f1)
@@ -21,13 +22,15 @@ function getLanguage(){
   [ "${language}" = "pt" ] && {
     keyboard_language="pt"
   }
+
+  return ${botao}
 }
 
 function getKeyboard(){
   [ ! "${1}" = "--skip-intro" ] && {
-     yad --text="<big><b>O idioma do teclado está definido como '${language_descritive}'</b>\n\nDeseja alterar?</big>\n"  \
+     yad --text="<big><b>O idioma do teclado está definido como '${language_descritive}'</b>\n\nDeseja manter?</big>\n"  \
         --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-yes:0  \
-        || {
+        && {
           getKeyboardVariation
           return
         }
@@ -45,12 +48,19 @@ function getKeyboard(){
   keyboard_language=$(
     yad --borders=32 --text="<big><b>Escolha O idioma do seu teclado</b></big>\n" --list  --width=640 --height=480  \
         --fixed --hide-column=2 --center --no-headers --column= --column=  --title="TigerOS 23 - Instalar sistema"    \
-        ${layouts} || exit 0
+        ${layouts}
   )
+  
+  botao=$?
   
   keyboard_language=$(echo "${keyboard_language}" | cut -d'|' -f2)
 
-  getKeyboardVariation
+  [ "${botao}" = "0" ] && {
+    getKeyboardVariation
+    return
+  }
+
+  return ${botao}
 }
 
 function getKeyboardVariation() {
@@ -66,8 +76,10 @@ function getKeyboardVariation() {
     yad --borders=32 --text="<big><b>Escolha a variação de layout</b></big>\n" --list                                     \
         --fixed --center --no-headers --column= --column= --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  \
         "      " "Tradicional" \
-        ${variations} || { getKeyboard --skip-intro; return; }
+        ${variations} 
   )
+
+  botao=$?
 
   keyboard_variation=$(echo "${keyboard_variation}" | cut -d'|' -f1)
 
@@ -80,6 +92,14 @@ function getKeyboardVariation() {
   echo "   Layout: ${keyboard_layout}"
   echo " Language: ${keyboard_language}"
   echo "Variation: ${keyboard_variation}"
+
+
+  [ ! "${botao}" = "0" ] && {
+    getKeyboard --skip-intro 
+    return
+  }
+
+  return 0
 }
  
 function getAccountDetails(){
@@ -96,8 +116,14 @@ function getAccountDetails(){
         --field=" ":lbl --field="Nome de usuário  "                                                                   \
         --field=" ":lbl --field="Senha de acesso":H                                                                   \
         --field="Confirme a senha":H                                                                                  \
-        --field=" ":lbl "${@}" || exit 0
+        --field=" ":lbl "${@}"
   )
+
+  botao=$?
+
+  [ ! "${botao}" = "0" ] && {
+    return 1
+  }
   
   user_fullname=$(echo ${account} | cut -d\| -f1)
   user_name=$(echo ${account}     | cut -d\| -f3)
@@ -136,6 +162,7 @@ function getAccountDetails(){
     return
   }
   
+  return 0
 }
 
 function getTimezone(){
@@ -159,8 +186,14 @@ function getTimezone(){
             | sed "s|Pacific|Horário do Pacífico|g"     \
             | sed "s|US|EUA|g"                          \
             | sed "s|Brazil|Brasil|g"                   \
-            | cat -n) || exit 0
+            | cat -n)
   )
+
+  botao=$?
+
+  [ ! "${botao}" = "0" ] && {
+    return 1
+  }
   
   area=$(
     timedatectl list-timezones | awk '{print $0 " " strftime("%z", systime())}' | grep / | cut -d/ -f1  \
@@ -176,11 +209,19 @@ function getTimezone(){
         $(timedatectl list-timezones | sort | uniq  | grep ${area}              \
                                      | cut -d'/' -f2-99                         \
                                      | sed 's|St_|St. |g;s|_| |g;s|Sao |São |g' \
-                                     | cat -n )|| { getTimezone; return; }
+                                     | cat -n )
   )
+
+  botao=$?
+
+  [ ! "${botao}" = "0" ] && {
+    getTimezone
+    return
+  }
   
   timezone=$(timedatectl list-timezones | sort | uniq  | grep ${area} | sed -n $(echo ${city} |cut -d\| -f1)p)
     
+  return 0
 }
 
 function getInstallMethod() {
@@ -189,13 +230,19 @@ function getInstallMethod() {
         --center --no-headers --column= --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"                \
         "Usar o disco inteiro"                                                                                        \
         "Usar uma partição"                                                                                           \
-        "Avançado"  || exit 0
+        "Avançado"
   )
+
+  botao=$?
   
   [ "${method}" = "Avançado|" ] && {
      gparted;
      getInstallMethod;
      return;
+  }
+
+  [ ! "${botao}" = "0" ] && {
+    return 1
   }
   
   getDisk
@@ -206,9 +253,14 @@ function getDisk(){
     yad --borders=32 --text="<big><b>Escolha onde o TigerOS 23 será instalado</b></big>\n" --list --fixed   \
         --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"                           \
         --column="Dispositivo             " --column="Tamanho"                                            \
-        $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")        \
-        || { getInstallMethod ""; return; }
+        $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")        
   )
+
+  botao=$?
+  [ ! "${botao}" = "0" ] && {
+    getInstallMethod
+    return
+  }
   
   disk=$(echo ${disk} | cut -d\| -f1)
   
@@ -222,20 +274,32 @@ function getDisk(){
 }
 
 function getPartition(){
-  partitions_list=$(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g')
+  partitions_list=$(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g' | grep "${disk}" | cut -d\| -f1)
   
   [ "${partitions_list}" = "" ] && {
-    getInstallMethod "<b>Erro:</b> O Disco ${disk} não possui partições, para usar esse disco, escolha \"Avançado\"\npara criar as instalações ou use o disco inteiro"
-    return
+      yad --text="<big><b>O disco selecionado não possui partições</b>\n\nDeseja usar o disco todo?</big>\n"  \
+        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-yes:0  \
+        && {
+          method="Usar o disco inteiro"
+          return
+        }
+
+      getDisk
+      return
   }
 
   sys_part=$(
     yad --borders=32 --text="<big><b>Escolha a partição onde o TigerOS 23 será instalado</b></big>\n" --list --fixed  \
         --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"                                            \
         --column="Dispositivo             " --column="Tamanho"                                                      \
-        $(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g') | grep "${disk}" | cut -d\| -f1  \
-        || || { getDisk; return; }
+        ${partitions_list}  \
   )
+
+  botao=$?
+  [ ! "${botao}" = "0" ] && {
+    getDisk
+    return
+  }
 }
 
 function confirmOptions() {
@@ -258,8 +322,8 @@ function confirmOptions() {
 
 function doInstallation(){
   [ "${method}" = "Usar o disco inteiro|" ] && {
-    sudo linstaller-fulldisk-setup --filesystem=ext4 "${disk}" | \
-      yad --progress --pulsate --auto-close --text="<big><b> Configurando o disco ${disk}, aguarde</b></big>\n\n"  --width=640 --borders=32 --undecorated --center --no-buttons
+    #sudo linstaller-fulldisk-setup --filesystem=ext4 "${disk}" | \
+    #  yad --progress --pulsate --auto-close --text="<big><b> Configurando o disco ${disk}, aguarde</b></big>\n\n"  --width=640 --borders=32 --undecorated --center --no-buttons
       
     sys_part="${disk}2"
     efi_part="${disk}1"
@@ -275,7 +339,7 @@ function doInstallation(){
     }
   }
   
-  sudo linstaller-backend                           \
+  echo linstaller-backend                           \
     --target-partition=${sys_part}                  \
     --efi-partition=${efi_part}                     \
     --user-name="${user_name}"                      \
@@ -285,21 +349,21 @@ function doInstallation(){
     --timezone="${timezone}"                        \
     --keyboard-map="${keyboard_layout}"             \
     --target-disk=/dev/sda                          \
-    --language=${language}                        | \
-      yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
-      --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n"
-      
+    --language=${language}                        #| \
+      #yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
+      #--text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n"
+      #
   yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
       --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Ok":0
 }
 
 yad --borders=32 --text="<big><b>Bem vindo(a) a Instalação do TigerOS 23</b></big>\n\nVocê será guiado(a) no passo a passo para a correta instalação\ndo sistema, seja como sistema único ou em dual boot\n\nCaso tenha alguma dúvida assista a videoaula na área de trabalho\nVamos começar?\n" --form --fixed  \
-      --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button=gtk-no:0 --button=gtk-yes:0
+      --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button=gtk-no:1 --button=gtk-yes:0 || exit
 
-getLanguage
-getKeyboard
-getAccountDetails
-getTimezone
-getInstallMethod
-confirmOptions
-doInstallation
+getLanguage       || exit
+getKeyboard       || exit
+getAccountDetails || exit
+getTimezone       || exit
+getInstallMethod  || exit
+confirmOptions    || exit
+doInstallation    || exit
