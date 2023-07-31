@@ -306,7 +306,7 @@ function getPartition(){
 
 function confirmOptions() {
    summary="\n"
-   summary="${summary} - Definir o idioma como ${language_name} e:\n"
+   summary="${summary} - Definir o idioma como ${language_descritive} e:\n"
    summary="${summary} - Definir o layout de teclado como ${keyboard_layout} e:\n"
    summary="${summary} - Criar o usuário ${user_name} como administrador\n"
    #[ "" = ""] && {
@@ -318,8 +318,17 @@ function confirmOptions() {
    data=$(yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field="" --field="Fazer login automaticamente":CHK  \
         --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n")
 
+  botao=$?
+  [ ! "${botao}" = "0" ] && {
+    return 1
+  }
+
    host_name=$(echo "${data}" | sed -n 1p)
    autologin=$(echo "${data}" | sed -n 2p)
+
+   [ "${autologin}" = "TRUE" ] && {
+     autologin="--auto-login"
+   }
 }
 
 function doInstallation(){
