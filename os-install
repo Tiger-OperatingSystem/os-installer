@@ -271,6 +271,7 @@ function getDisk(){
   [ "${method}" = "Avançado|" ] && {
      getPartition
   }
+  return 0
 }
 
 function getPartition(){
