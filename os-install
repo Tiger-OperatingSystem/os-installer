@@ -329,6 +329,8 @@ function confirmOptions() {
    [ "${autologin}" = "TRUE" ] && {
      autologin="--auto-login"
    }
+
+   return 0
 }
 
 function doInstallation(){
