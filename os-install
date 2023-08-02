@@ -326,7 +326,7 @@ function getPartition(){
 }
 
 function confirmOptions() {
-   summary="\n${1}"
+   summary="${1}"
    summary="${summary} - Definir o idioma como ${language_descritive} e:\n"
    summary="${summary} - Definir o layout de teclado como ${keyboard_layout} e:\n"
    summary="${summary} - Criar o usuário ${user_name} como administrador\n"
@@ -342,6 +342,7 @@ function confirmOptions() {
         --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n" "" "${2}" "${3}" )
 
   botao=$?
+
   [ ! "${botao}" = "0" ] && {
     return 1
   }
@@ -352,6 +353,19 @@ function confirmOptions() {
       confirmOptions "<b>Erro:</b> Nome do computador na rede não pode ficar em branco\n" "Tiger_Machine" $(echo "${data}" | sed -n 2p)
       return
    }
+
+   host_name_valid=$(echo "${user_name}" | iconv -t ASCII//TRANSLIT | tr ' ' '_' | sed 's|[^a-zA-Z0-9_-]||g;s|^-|_|g')
+                                        
+  [ ! "${host_name}" = "${host_name_valid}" ] && {
+    yad --text="<big><b>Nome do computador '${host_name}' não é válido</b>\n\n O instalador sugere <b>${host_name_valid}</b>, deseja utilizar?</big>\n"  \
+        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0                             \
+        || {
+          confirmOptions "<b>Erro:</b> Nome de host inválido'
+          return
+        }
+    
+    host_name="${user_name_valid}"
+  }
 
    autologin=$(echo "${data}" | sed -n 2p)
 
