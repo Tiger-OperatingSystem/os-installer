@@ -326,7 +326,7 @@ function getPartition(){
 }
 
 function confirmOptions() {
-   summary="\n"
+   summary="\n${1}"
    summary="${summary} - Definir o idioma como ${language_descritive} e:\n"
    summary="${summary} - Definir o layout de teclado como ${keyboard_layout} e:\n"
    summary="${summary} - Criar o usuário ${user_name} como administrador\n"
@@ -339,14 +339,20 @@ function confirmOptions() {
    }
    
    data=$(yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field="" --field="Fazer login automaticamente":CHK  \
-        --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n")
+        --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n" "" "${2}" "${3}" )
 
   botao=$?
   [ ! "${botao}" = "0" ] && {
     return 1
   }
 
-   host_name=$(echo "${data}" | sed -n 1p)
+   host_name=$(echo "${data}" | sed -n 1p | tr -d '[:blank:]' )
+
+   [ "${host_name}" = "" ] && {
+      confirmOptions "<b>Erro:</b> Nome do computador na rede não pode ficar em branco\n" "Tiger_Machine" $(echo "${data}" | sed -n 2p)
+      return
+   }
+
    autologin=$(echo "${data}" | sed -n 2p)
 
    [ "${autologin}" = "TRUE" ] && {
@@ -403,5 +409,5 @@ getKeyboard       || exit
 getAccountDetails || exit
 getTimezone       || exit
 getInstallMethod  || exit
-confirmOptions    || exit
+confirmOptions    "" "" "${host_name}" || exit
 doInstallation    || exit
