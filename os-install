@@ -360,7 +360,7 @@ function confirmOptions() {
     yad --text="<big><b>Nome do computador '${host_name}' não é válido</b>\n\n O instalador sugere <b>${host_name_valid}</b>, deseja utilizar?</big>\n"  \
         --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0                             \
         || {
-          confirmOptions "<b>Erro:</b> Nome de host inválido'
+          confirmOptions "<b>Erro:</b> Nome do computador inválido"
           return
         }
     
