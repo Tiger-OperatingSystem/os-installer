@@ -296,6 +296,8 @@ function getPartition(){
         ${partitions_list}  \
   )
 
+  sys_part=$(echo ${sys_part} | sed 's/|.*//g')
+
   botao=$?
   [ ! "${botao}" = "0" ] && {
     getDisk
@@ -313,6 +315,8 @@ function confirmOptions() {
      summary="${summary} - APAGAR todos os dados em ${disk} e:\n"
      summary="${summary}   - Criar uma partição EFI de 512 MB (partição de boot)\n"
      summary="${summary}   - Criar uma partição EXT4 usando o resto do espaço\n"
+   } || {
+     summary="${summary} - APAGAR todos os dados em ${sys_part}\n"
    }
    
    data=$(yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field="" --field="Fazer login automaticamente":CHK  \
