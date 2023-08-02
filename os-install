@@ -268,7 +268,7 @@ function getDisk(){
      return 0
   }
 
-  efi_part=$(sudo fdisk -l ${disk} | grep "EFI")
+  efi_part=$(sudo fdisk -l ${disk} | grep "EFI" | cut -d" " -f1)
 
   [ -d "/sys/firmware/efi" ] && {
     [ "${efi_part}" = "" ] && {
@@ -294,7 +294,7 @@ function getDisk(){
 }
 
 function getPartition(){
-  partitions_list=$(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g' | grep "${disk}" | cut -d\| -f1)
+  partitions_list=$(lsblk -a -o NAME,SIZE,TYPE | grep part | sed 's| part||g;s|[├─└]||g;s|^|/dev/|g' | grep "${disk}" | grep -Ev "${efi_part}" | cut -d\| -f1 )
   
   [ "${partitions_list}" = "" ] && {
       yad --text="<big><b>O disco selecionado não possui partições</b>\n\nDeseja usar o disco todo?</big>\n"  \
