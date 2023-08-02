@@ -350,17 +350,17 @@ function confirmOptions() {
    host_name=$(echo "${data}" | sed -n 1p | tr -d '[:blank:]' )
 
    [ "${host_name}" = "" ] && {
-      confirmOptions "<b>Erro:</b> Nome do computador na rede não pode ficar em branco\n" "Tiger_Machine" $(echo "${data}" | sed -n 2p)
+      confirmOptions "<b>Erro:</b> Nome do computador na rede não pode ficar em branco\n\n" "Tiger_Machine" $(echo "${data}" | sed -n 2p)
       return
    }
 
-   host_name_valid=$(echo "${user_name}" | iconv -t ASCII//TRANSLIT | tr ' ' '_' | sed 's|[^a-zA-Z0-9_-]||g;s|^-|_|g')
+   host_name_valid=$(echo "${host_name}" | iconv -t ASCII//TRANSLIT | tr ' ' '_' | sed 's|[^a-zA-Z0-9_-]||g;s|^-|_|g')
                                         
   [ ! "${host_name}" = "${host_name_valid}" ] && {
     yad --text="<big><b>Nome do computador '${host_name}' não é válido</b>\n\n O instalador sugere <b>${host_name_valid}</b>, deseja utilizar?</big>\n"  \
         --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0                             \
         || {
-          confirmOptions "<b>Erro:</b> Nome do computador inválido"
+          confirmOptions "<b>Erro:</b> Nome do computador inválido\n\n"
           return
         }
     
@@ -379,8 +379,8 @@ function confirmOptions() {
 
 function doInstallation(){
   [ "${method}" = "Usar o disco inteiro|" ] && {
-    #sudo linstaller-fulldisk-setup --filesystem=ext4 "${disk}" | \
-    #  yad --progress --pulsate --auto-close --text="<big><b> Configurando o disco ${disk}, aguarde</b></big>\n\n"  --width=640 --borders=32 --undecorated --center --no-buttons
+    sudo linstaller-fulldisk-setup --filesystem=ext4 "${disk}" | \
+      yad --progress --pulsate --auto-close --text="<big><b> Configurando o disco ${disk}, aguarde</b></big>\n\n"  --width=640 --borders=32 --undecorated --center --no-buttons
       
     sys_part="${disk}2"
     efi_part="${disk}1"
@@ -396,7 +396,7 @@ function doInstallation(){
     }
   }
   
-  echo linstaller-backend                           \
+  sudo linstaller-backend                           \
     --target-partition=${sys_part}                  \
     --efi-partition=${efi_part}                     \
     --user-name="${user_name}"                      \
@@ -407,10 +407,10 @@ function doInstallation(){
     --keyboard-map="${keyboard_layout}"             \
     --target-disk=${disk}                           \
     --language=${language}                          \
-    ${autologin} ${autouser}                     #| \
-      #yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
-      #--text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n"
-      #
+    ${autologin} ${autouser}                     | \
+      yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
+          --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n"
+      
   yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
       --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Ok":0
 }
