@@ -309,11 +309,11 @@ function confirmOptions() {
    summary="${summary} - Definir o idioma como ${language_descritive} e:\n"
    summary="${summary} - Definir o layout de teclado como ${keyboard_layout} e:\n"
    summary="${summary} - Criar o usuário ${user_name} como administrador\n"
-   #[ "" = ""] && {
+   [ "${method}" = "Usar o disco inteiro|" ] && {
      summary="${summary} - APAGAR todos os dados em ${disk} e:\n"
      summary="${summary}   - Criar uma partição EFI de 512 MB (partição de boot)\n"
      summary="${summary}   - Criar uma partição EXT4 usando o resto do espaço\n"
-   #}
+   }
    
    data=$(yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field="" --field="Fazer login automaticamente":CHK  \
         --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n")
