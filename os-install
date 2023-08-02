@@ -327,6 +327,7 @@ function confirmOptions() {
    autologin=$(echo "${data}" | sed -n 2p)
 
    [ "${autologin}" = "TRUE" ] && {
+     autouser="${user_name}"
      autologin="--auto-login"
    }
 
@@ -362,7 +363,8 @@ function doInstallation(){
     --timezone="${timezone}"                        \
     --keyboard-map="${keyboard_layout}"             \
     --target-disk=/dev/sda                          \
-    --language=${language}                        #| \
+    --language=${language}                          \
+    ${autologin} ${autouser}                     #| \
       #yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
       #--text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n"
       #
