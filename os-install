@@ -380,7 +380,7 @@ function confirmOptions() {
 function doInstallation(){
   [ "${method}" = "Usar o disco inteiro|" ] && {
     sudo linstaller-fulldisk-setup --filesystem=ext4 "${disk}" | \
-      yad --progress --pulsate --auto-close --text="<big><b> Configurando o disco ${disk}, aguarde</b></big>\n\n"  --width=640 --borders=32 --undecorated --center --no-buttons
+      yad --progress --pulsate --auto-close --text="<big><b> Configurando o disco ${disk}, aguarde</b></big>\n\n"  --width=640 --borders=32 --undecorated --center --no-buttons --hide-text
       
     sys_part="${disk}2"
     efi_part="${disk}1"
@@ -409,7 +409,7 @@ function doInstallation(){
     --language=${language}                          \
     ${autologin} ${autouser}                     | \
       yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
-          --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n"
+          --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n" --hide-text
       
   yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
       --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Ok":0
