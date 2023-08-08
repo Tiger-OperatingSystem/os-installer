@@ -5,7 +5,7 @@ host_name="Tiger_Machine"
 function getLanguage(){
   language=$(
     yad --borders=32 --text="<big><b>Escolha o idioma do sistema</b></big>\n" --list --fixed --column=    \
-        --center --no-headers --column=  --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"   \
+        --center --no-headers --column=  --width=640 --height=480 --title="TigerOS 23.1 - Instalar sistema"   \
         "pt_BR" "Português Brasileiro"                                                                    \
         "pt" "Português Europeu"                                                                          \
         --hide-column=1)
@@ -29,7 +29,7 @@ function getLanguage(){
 function getKeyboard(){
   [ ! "${1}" = "--skip-intro" ] && {
      yad --text="<big><b>O idioma do teclado está definido como '${language_descritive}'</b>\n\nDeseja manter?</big>\n"  \
-        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-yes:0  \
+        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23.1 - Instalar sistema" --button=gtk-no:1 --button=gtk-yes:0  \
         && {
           getKeyboardVariation
           return
@@ -47,7 +47,7 @@ function getKeyboard(){
 
   keyboard_language=$(
     yad --borders=32 --text="<big><b>Escolha O idioma do seu teclado</b></big>\n" --list  --width=640 --height=480  \
-        --fixed --hide-column=2 --center --no-headers --column= --column=  --title="TigerOS 23 - Instalar sistema"    \
+        --fixed --hide-column=2 --center --no-headers --column= --column=  --title="TigerOS 23.1 - Instalar sistema"    \
         ${layouts}
   )
   
@@ -74,7 +74,7 @@ function getKeyboardVariation() {
 
   keyboard_variation=$(
     yad --borders=32 --text="<big><b>Escolha a variação de layout</b></big>\n" --list                                     \
-        --fixed --center --no-headers --column= --column= --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  \
+        --fixed --center --no-headers --column= --column= --width=640 --height=480 --title="TigerOS 23.1 - Instalar sistema"  \
         "      " "Tradicional" \
         ${variations} 
   )
@@ -111,7 +111,7 @@ function getAccountDetails(){
   
   account=$(
     yad --borders=32 --text="<big><b>Criar o usuário administrador</b></big>\n<small>${erro_validacao} </small>\n"    \
-        --form --fixed --center --width=640 --height=480  --title="TigerOS 23 - Instalar sistema"                       \
+        --form --fixed --center --width=640 --height=480  --title="TigerOS 23.1 - Instalar sistema"                       \
         --field="\nNome da empresa     \n"                                                                            \
         --field=" ":lbl --field="Nome de usuário  "                                                                   \
         --field=" ":lbl --field="Senha de acesso":H                                                                   \
@@ -144,7 +144,7 @@ function getAccountDetails(){
                                         
   [ ! "${user_name}" = "${user_name_valid}" ] && {
     yad --text="<big><b>Nome '${user_name}' não é válido como nome de usuário</b>\n\n O instalador sugere <b>${user_name_valid}</b>, deseja utilizar?</big>\n"  \
-        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0                             \
+        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23.1 - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0                             \
         || {
           getAccountDetails '<b>Erro:</b> Nome de usuário inválido' "${user_fullname}" "" "${user_name_valid}" "" "${user_password}" "${test_password}"
           return
@@ -168,7 +168,7 @@ function getAccountDetails(){
 function getTimezone(){
   area=$(
     yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list    \
-        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"    \
+        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="TigerOS 23.1 - Instalar sistema"    \
         $(timedatectl list-timezones | awk '{print $0 " " strftime("%z", systime())}'                                                       \
             | grep / | cut -d/ -f1 | sort | uniq        \
             | sed "s|Africa|África|g"                   \
@@ -205,7 +205,7 @@ function getTimezone(){
   
   city=$(
     yad --borders=32 --text="<big><b>Escolha a região do fuso-horário</b></big>\nHorário padrão de Brasília: América/São paulo\n" --list   \
-        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"   \
+        --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="TigerOS 23.1 - Instalar sistema"   \
         $(timedatectl list-timezones | sort | uniq  | grep ${area}              \
                                      | cut -d'/' -f2-99                         \
                                      | sed 's|St_|St. |g;s|_| |g;s|Sao |São |g' \
@@ -227,7 +227,7 @@ function getTimezone(){
 function getInstallMethod() {
   method=$(
     yad --borders=32 --text="<big><b>Escolha o método de instalação</b></big>\n<small>${1} </small>\n" --list --fixed   \
-        --center --no-headers --column= --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"                \
+        --center --no-headers --column= --width=640 --height=480 --title="TigerOS 23.1 - Instalar sistema"                \
         "Usar o disco inteiro"                                                                                        \
         "Usar uma partição"                                                                                           \
         "Avançado"
@@ -250,8 +250,8 @@ function getInstallMethod() {
  
 function getDisk(){
   disk=$(
-    yad --borders=32 --text="<big><b>Escolha onde o TigerOS 23 será instalado</b></big>\n" --list --fixed   \
-        --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"                           \
+    yad --borders=32 --text="<big><b>Escolha onde o TigerOS 23.1 será instalado</b></big>\n" --list --fixed   \
+        --center --width=640 --height=480 --title="TigerOS 23.1 - Instalar sistema"                           \
         --column="Dispositivo             " --column="Tamanho"                                            \
         $(lsblk -a -o NAME,SIZE,TYPE | grep disk | sed 's|disk||g;s|^|/dev/|g' | grep -Ev "ram|M")        
   )
@@ -273,7 +273,7 @@ function getDisk(){
   [ -d "/sys/firmware/efi" ] && {
     [ "${efi_part}" = "" ] && {
       yad --text="<big><b>O disco selecionado não possui uma partição EFI</b>\n\nPara usar esse disco, no modo avançado:\n   - Crie uma partição fat32 com pelo menos 512 MB\n   - Clique com o botão direito na partição criada\n   - Clique em Gerenciar sinalizadores\n   - Clique em Gerenciar sinalizadores\n   - Marque a opção esp\n   - Clique em fechar para salvar os sinalizadores\n\nApós fechar o particionador, poderá utilizar esse disco</big>\n"  \
-        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-ok:0  \
+        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23.1 - Instalar sistema" --button=gtk-ok:0  \
 
       getInstallMethod
       return 0
@@ -298,7 +298,7 @@ function getPartition(){
   
   [ "${partitions_list}" = "" ] && {
       yad --text="<big><b>O disco selecionado não possui partições</b>\n\nDeseja usar o disco todo?</big>\n"  \
-        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-yes:0  \
+        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23.1 - Instalar sistema" --button=gtk-no:1 --button=gtk-yes:0  \
         && {
           method="Usar o disco inteiro"
           return
@@ -309,8 +309,8 @@ function getPartition(){
   }
 
   sys_part=$(
-    yad --borders=32 --text="<big><b>Escolha a partição onde o TigerOS 23 será instalado</b></big>\n" --list --fixed  \
-        --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"                                            \
+    yad --borders=32 --text="<big><b>Escolha a partição onde o TigerOS 23.1 será instalado</b></big>\n" --list --fixed  \
+        --center --width=640 --height=480 --title="TigerOS 23.1 - Instalar sistema"                                            \
         --column="Dispositivo             " --column="Tamanho"                                                      \
         ${partitions_list}  \
   )
@@ -339,7 +339,7 @@ function confirmOptions() {
    }
    
    data=$(yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field="" --field="Fazer login automaticamente":CHK  \
-        --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n" "" "${2}" "${3}" )
+        --center --width=640 --height=480 --title="TigerOS 23.1 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n" "" "${2}" "${3}" )
 
   botao=$?
 
@@ -358,7 +358,7 @@ function confirmOptions() {
                                         
   [ ! "${host_name}" = "${host_name_valid}" ] && {
     yad --text="<big><b>Nome do computador '${host_name}' não é válido</b>\n\n O instalador sugere <b>${host_name_valid}</b>, deseja utilizar?</big>\n"  \
-        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0                             \
+        --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23.1 - Instalar sistema" --button=gtk-no:1 --button=gtk-ok:0                             \
         || {
           confirmOptions "<b>Erro:</b> Nome do computador inválido\n\n"
           return
@@ -408,15 +408,17 @@ function doInstallation(){
     --target-disk=${disk}                           \
     --language=${language}                          \
     ${autologin} ${autouser}                     | \
-      yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
-          --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n" --hide-text
+| yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
+          --text="<big><b>Extraindo a imagem do TigerOS 23.1 aguarde</b></big>" --hide-text
       
-  yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
-      --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Ok":0
+  # Mantenha esta linha
+yad --borders=32 --text="<big><b>TigerOS 23.1 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
+      --center --width=640 --title="TigerOS 23.1 - Instalar sistema"  --button="Ok":0
+
 }
 
-yad --borders=32 --text="<big><b>Bem vindo(a) a Instalação do TigerOS 23</b></big>\n\nVocê será guiado(a) no passo a passo para a correta instalação\ndo sistema, seja como sistema único ou em dual boot\n\nCaso tenha alguma dúvida assista a videoaula na área de trabalho\nVamos começar?\n" --form --fixed  \
-      --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button=gtk-no:1 --button=gtk-yes:0 || exit
+yad --borders=32 --text="<big><b>Bem vindo(a) a Instalação do TigerOS 23.1</b></big>\n\nVocê será guiado(a) no passo a passo para a correta instalação\ndo sistema, seja como sistema único ou em dual boot\n\nCaso tenha alguma dúvida assista a videoaula na área de trabalho\nVamos começar?\n" --form --fixed  \
+      --center --width=640 --height=480 --title="TigerOS 23.1 - Instalar sistema"  --button=gtk-no:1 --button=gtk-yes:0 || exit
 
 getLanguage       || exit
 getKeyboard       || exit
