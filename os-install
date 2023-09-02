@@ -396,21 +396,34 @@ function doInstallation(){
     }
   }
   
-  sudo linstaller-backend                           \
-    --target-partition=${sys_part}                  \
-    --efi-partition=${efi_part}                     \
-    --user-name="${user_name}"                      \
-    --user-password="${user_password}"              \
-    --squashfs="/cdrom/casper/filesystem.squashfs"  \
-    --hostname="${host_name}"                       \
-    --timezone="${timezone}"                        \
-    --keyboard-map="${keyboard_layout}"             \
-    --target-disk=${disk}                           \
-    --language=${language}                          \
-    ${autologin} ${autouser}                     | \
-      yad --progress --pulsate --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
-          --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n" --hide-text
-      
+  linefeed="$(echo -e "\r")"
+  temp_line=""
+  while IFS= read -rn 1 char; do
+    if [ "${char}" == "${linefeed}" ]; then
+        line="${temp_line}"
+        temp_line=""
+
+        echo ${line} | grep -oP '\d+(?=%)'
+
+    else
+        temp_line="${temp_line}${char}"
+    fi
+  done < <(
+           sudo linstaller-backend                           \
+             --target-partition=${sys_part}                  \
+             --efi-partition=${efi_part}                     \
+             --user-name="${user_name}"                      \
+             --user-password="${user_password}"              \
+             --squashfs="/cdrom/casper/filesystem.squashfs"  \
+             --hostname="${host_name}"                       \
+             --timezone="${timezone}"                        \
+             --keyboard-map="${keyboard_layout}"             \
+             --target-disk=${disk}                           \
+             --language=${language}                          \
+             ${autologin} ${autouser}                        
+  ) | yad --progress --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
+             --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n" --hide-text
+
   yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
       --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Ok":0
 }
