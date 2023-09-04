@@ -237,8 +237,8 @@ function getInstallMethod() {
   
   [ "${method}" = "Avançado|" ] && {
      gparted;
+     sudo partprobe || true
      getInstallMethod;
-     partprobe
      return;
   }
 
@@ -399,11 +399,11 @@ function doInstallation(){
 
   export MESSAGE_FILE=$(mktemp)
 
-  umount -l "${efi_part}"
-  umount -l "${efi_part}"
+  umount -l "${efi_part}" || true
+  umount -l "${efi_part}" || true
 
-  umount -l "${sys_part}"
-  umount -l "${sys_part}"
+  umount -l "${sys_part}" || true
+  umount -l "${sys_part}" || true
   
   linefeed="$(echo -e "\r")"
   temp_line=""
@@ -429,12 +429,12 @@ function doInstallation(){
              --keyboard-map="${keyboard_layout}"             \
              --target-disk=${disk}                           \
              --language=${language}                          \
-             ${autologin} ${autouser}                        
+             ${autologin} ${autouser} 2>> ${MESSAGE_FILE}
   ) | yad --progress --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
              --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n" --hide-text
 
   grep -q "Fail" "${MESSAGE_FILE}" && {
-    yad --borders=32 --text="<big><b>Falha na instalação</b></big>\nlinstaller retornou:\n  $(cat ${MESSAGE_FILE})\n" --form --fixed   \
+    yad --borders=32 --text="<big><b>Falha na instalação</b></big>\nlinstaller retornou:\n\n  $(grep "Fail" ${MESSAGE_FILE})\n\nPara mais informações veja o arquivo ${MESSAGE_FILE}\n" --form --fixed   \
         --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Ok":0
     exit 1
   }
