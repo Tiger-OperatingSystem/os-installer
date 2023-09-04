@@ -238,6 +238,7 @@ function getInstallMethod() {
   [ "${method}" = "Avançado|" ] && {
      gparted;
      getInstallMethod;
+     partprobe
      return;
   }
 
@@ -395,6 +396,14 @@ function doInstallation(){
       sys_part="${disk}p2"
     }
   }
+
+  export MESSAGE_FILE=$(mktemp)
+
+  umount -l "${efi_part}"
+  umount -l "${efi_part}"
+
+  umount -l "${sys_part}"
+  umount -l "${sys_part}"
   
   linefeed="$(echo -e "\r")"
   temp_line=""
@@ -423,6 +432,12 @@ function doInstallation(){
              ${autologin} ${autouser}                        
   ) | yad --progress --auto-close --width=640 --borders=32 --undecorated --center --no-buttons \
              --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n" --hide-text
+
+  grep -q "Fail" "${MESSAGE_FILE}" && {
+    yad --borders=32 --text="<big><b>Falha na instalação</b></big>\nlinstaller retornou:\n  $(cat ${MESSAGE_FILE})\n" --form --fixed   \
+        --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Ok":0
+    exit 1
+  }
 
   yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
       --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Ok":0
