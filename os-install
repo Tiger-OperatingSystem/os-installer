@@ -239,7 +239,7 @@ function getDisk(){
 
   [ -d "/sys/firmware/efi" ] && {
     [ "${efi_part}" = "" ] && {
-      yad --text="<big><b>O disco selecionado não possui uma partição EFI</b>\n\nPara usar esse disco, no modo avançado:\n   - Crie uma partição FAT32 com pelo menos 512 MB\n   - Clique com o botão direito na partição criada\n   - Clique em Gerenciar sinalizadores\n   - Marque a opção esp\n   - Clique em Fechar para salvar os sinalizadores\n\nApós fechar o particionador, poderá utilizar esse disco para escolher a partição</big>\n"  \
+      yad --text="<big><b>O disco selecionado não possui uma partição EFI</b>\n\nPara usar esse disco, no modo avançado:\n   - Crie uma partição FAT32 com pelo menos 512 MB\n   - Clique com o botão direito na partição criada\n   - Clique em Gerenciar sinalizadores\n   - Marque a opção esp\n   - Clique em Fechar para salvar os sinalizadores\n\nApós fechar o particionador, poderá utilizar esse disco\nparaescolher a partição</big>\n"  \
         --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-ok:0 --on-top  \
 
       getInstallMethod
