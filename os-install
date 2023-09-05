@@ -112,8 +112,7 @@ function getAccountDetails(){
   account=$(
     yad --borders=32 --text="<big><b>Criar o usuário administrador</b></big>\n<small>${erro_validacao} </small>\n"    \
         --form --fixed --center --width=640 --height=480  --title="TigerOS 23 - Instalar sistema"                     \
-        --field="\nNome da empresa     \n"                                                                            \
-        --field=" ":lbl --field="Nome de usuário  "                                                                   \
+        --field="Nome de usuário  "                                                                   \
         --field=" ":lbl --field="Senha de acesso":H                                                                   \
         --field="Confirme a senha":H                                                                                  \
         --field=" ":lbl "${@}"
@@ -125,11 +124,10 @@ function getAccountDetails(){
     return 1
   }
   
-  user_fullname=$(echo ${account} | cut -d\| -f1)
-  user_name=$(echo ${account}     | cut -d\| -f3)
+  user_name=$(echo ${account}     | cut -d\| -f1)
   
-  user_password=$(echo ${account} | cut -d\| -f5)
-  test_password=$(echo ${account} | cut -d\| -f6)
+  user_password=$(echo ${account} | cut -d\| -f3)
+  test_password=$(echo ${account} | cut -d\| -f4)
   
   [ "${user_name}" = "root" ] && {
     getAccountDetails '<b>Erro:</b> root é um nome reservado' "${user_fullname}" "" "" "" "${user_password}" "${test_password}"
