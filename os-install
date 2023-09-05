@@ -167,7 +167,7 @@ function getAccountDetails(){
 
 function getTimezone(){
   cd /usr/share/tiger-os/
-  country=$(yad --borders=32 --text="<big><b>Escolha o país onde você está</b></big>\nCaso essa lista segue o padrão ISO 3166-2\n" --list    \
+  country=$(yad --borders=32 --text="<big><b>Escolha o país onde você está</b></big>\nEssa lista segue o padrão ISO 3166-2\n" --list    \
                 --fixed --hide-column=1 --center --no-headers --column= --column= --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"    \
                 $(sed 's|"||g;s| | |g;s|;| |g;s|\r||g' lista_paises.csv))
 
@@ -178,7 +178,7 @@ function getTimezone(){
 
   country=$(echo $country | cut -d '|' -f1)
 
-  timezone=$(yad --borders=32 --text="<big><b>Escolha o país onde você está</b></big>\nCaso essa lista segue o padrão ISO 3166-2\n" --list    \
+  timezone=$(yad --borders=32 --text="<big><b>Escolha a região</b></big>\nEscolha a cidade província, estado ou região em que você está.\nSe não estiver na lista escolha a mais próxima\n" --list    \
                  --fixed --hide-column=1 --center --no-headers --column= --column= --column= --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"    \
                  $(grep "${country}" timezones_lista.csv | cut -d ';' -f 2-4 | sed 's|"||g;s| | |g;s|;| |g;s|\r||g'))
 
