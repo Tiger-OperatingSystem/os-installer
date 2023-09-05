@@ -267,7 +267,7 @@ function getPartition(){
       yad --text="<big><b>O disco selecionado não possui partições</b>\n\nDeseja usar o disco todo?</big>\n"  \
         --borders=32 --list --fixed  --center --width=640 --title="TigerOS 23 - Instalar sistema" --button=gtk-no:1 --button=gtk-yes:0  \
         && {
-          method="Usar o disco inteiro"
+          method="Usar o disco inteiro|"
           return
         }
 
