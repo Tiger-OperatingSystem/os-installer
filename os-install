@@ -401,7 +401,7 @@ function doInstallation(){
              --language=${language}                          \
              ${autologin} ${autouser} 2>> ${MESSAGE_FILE}
   ) | yad --progress --auto-close --width=640 --borders=32 --undecorated --center --no-buttons --on-top \
-             --text="<big><b>Extraindo a imagem do TigerOS 23 aguarde</b></big>\n\n" --hide-text
+             --text="<big><b>Extraindo a imagem do TigerOS 23, aguarde</b></big>\n\n" --hide-text
 
   grep -q "Fail" "${MESSAGE_FILE}" && {
     yad --borders=32 --text="<big><b>Falha na instalação</b></big>\nlinstaller retornou:\n\n  $(grep "Fail" ${MESSAGE_FILE})\n\nPara mais informações veja o arquivo ${MESSAGE_FILE}\n" --form --fixed   \
