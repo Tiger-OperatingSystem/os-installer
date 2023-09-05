@@ -192,8 +192,6 @@ function getTimezone(){
   return 0
 }
 
-getTimezone
-
 function getInstallMethod() {
   method=$(
     yad --borders=32 --text="<big><b>Escolha o método de instalação</b></big>\n<small>${1} </small>\n" --list --fixed   \
