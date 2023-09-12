@@ -102,7 +102,7 @@ function getKeyboardVariation() {
   setxkbmap ${keyboard_language}  ${keyboard_variation}
 
   yad --form --field= --field=" ":lbl --borders=32 \
-      --text="<big><b>Teste seu teclado no campo abaixo:</b></big>\nCaso não esteja Ok, clique em 'Cancelar' para ecolher outro layout\n" \
+      --text="<big><b>Teste seu teclado no campo abaixo:</b></big>\nCaso não esteja Ok, clique em 'Cancelar' para escolher outro layout\n" \
       --width=640 --title="TigerOS 23 - Instalar sistema" --center --fixed
 
   botao=$?
