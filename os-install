@@ -125,9 +125,9 @@ function getAccountDetails(){
   account=$(
     yad --borders=32 --text="<big><b>Criar o usuário administrador</b></big>\n<small>${erro_validacao} </small>\n"    \
         --form --fixed --center --width=640 --height=480  --title="TigerOS 23 - Instalar sistema"  --on-top           \
-        --field="Nome de usuário  "                                                                                   \
-        --field=" ":lbl --field="Senha de acesso":H                                                                   \
-        --field="Confirme a senha":H                                                                                  \
+        --field="Nome de usuário*  "                                                                                   \
+        --field=" ":lbl --field="Senha de acesso**":H                                                                   \
+        --field="Confirme a senha**":H                                                                                  \
         --field=" ":lbl "${@}"
   )
 
@@ -136,8 +136,6 @@ function getAccountDetails(){
   [ ! "${botao}" = "0" ] && {
     return 1
   }
-  
-  user_name=$(echo ${account}     | cut -d\| -f1)
   
   user_password=$(echo ${account} | cut -d\| -f3)
   test_password=$(echo ${account} | cut -d\| -f4)
@@ -151,7 +149,7 @@ function getAccountDetails(){
   }
   
   user_name_valid=$(echo "${user_name}" | iconv -t ASCII//TRANSLIT | tr '[:upper:]' '[:lower:]' \
-                                        | tr ' ' '_' | sed 's|[^a-zA-Z0-9_-]||g;s|^-|_|g')
+                                        | tr '[:space:]' '_' | sed 's|[^a-zA-Z0-9_-]||g;s|^-|_|g')
                                         
   [ ! "${user_name}" = "${user_name_valid}" ] && {
     yad --text="<big><b>Nome '${user_name}' não é válido como nome de usuário</b>\n\n O instalador sugere <b>${user_name_valid}</b>, deseja utilizar?</big>\n"    \
@@ -165,7 +163,7 @@ function getAccountDetails(){
   }
   
   [ "${user_password}" = "" ] && {
-    getAccountDetails '<b>Erro:</b> Faltou a senha' "${user_fullname}" "" "${user_name}" "" "" ""
+    getAccountDetails '<b>Erro:</b> Senha é obrigatória' "${user_fullname}" "" "${user_name}" "" "" ""
   }
   
   [ ! "${user_password}" = "${test_password}" ] && {
