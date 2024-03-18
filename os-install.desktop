@@ -1,9 +1,9 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Instalador do TigerOS 23.1
+Name=Instalador do TigerOS 23
 Exec=os-install
-Icon=tigerInstall
+Icon=tigerInstall.png
 Categories=System;
 Terminal=false
 StartupNotify=false
