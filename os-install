@@ -502,7 +502,7 @@ function doInstallation(){
      sudo fallocate -l 2G /target/swap
      sudo mkswap /target/swap
      sudo chmod 600 /target/swap
-     echo "/storage/arquivo-de-troca   none   swap  sw  0  0" | sudo tee -a /target/etc/fstab
+     echo "/swap   none   swap  sw  0  0" | sudo tee -a /target/etc/fstab
   ) | yad --progress --pulsate --auto-close --text="<big><b> Configurando o arquivo de troca em ${disk}, aguarde</b></big>\n\n"  --width=640  \
                                                          --borders=32 --undecorated --center --no-buttons --hide-text --on-top
 
