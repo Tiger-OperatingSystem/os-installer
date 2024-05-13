@@ -509,8 +509,10 @@ function doInstallation(){
   yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
       --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Reiniciar":42 --button="Fechar":0 --on-top 
 
+  botao=$?;
+
   [ "${botao}" = "42" ] && {
-    sudo systemctl start reboot.target
+    sudo shutdown -r now
     exit 
   }
 }
