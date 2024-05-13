@@ -496,6 +496,16 @@ function doInstallation(){
     exit 1
   }
 
+  mkdir -p "/target"
+  mount -o rw "${sys_part}" /target 
+  (
+     sudo fallocate -l 2G /target/swap
+     sudo mkswap /target/swap
+     sudo chmod 600 /target/swap
+     echo "/storage/arquivo-de-troca   none   swap  sw  0  0" | sudo tee -a /target/etc/fstab
+  ) | yad --progress --pulsate --auto-close --text="<big><b> Configurando o arquivo de troca em ${disk}, aguarde</b></big>\n\n"  --width=640  \
+                                                         --borders=32 --undecorated --center --no-buttons --hide-text --on-top
+
   yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
       --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Reiniciar":42 --button="Fechar":0 --on-top 
 
