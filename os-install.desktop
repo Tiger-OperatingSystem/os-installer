@@ -1,18 +1,11 @@
 [Desktop Entry]
 Categories=System;
-Comment[pt_BR]=
-Comment=
 Exec=os-install
-GenericName[pt_BR]=
-GenericName=
 Icon=/usr/share/pixmaps/tigerInstall.png
-MimeType=
-Name[pt_BR]=Instalador do TigerOS 23
-Name=Instalador do TigerOS 23
-Path=
+Name[pt_BR]=Instalador do TigerOS
+Name=Instalador do TigerOS
 StartupNotify=false
 Terminal=false
-TerminalOptions=
 Type=Application
 Version=1.0
 X-KDE-SubstituteUID=false
