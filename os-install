@@ -254,12 +254,12 @@ function getInstallMethod() {
         --button=Fechar:1 --button=Voltar:42 --button=Prosseguir:0                                                      \
         "Usar o disco inteiro"                                                                                          \
         "Usar uma partição"                                                                                             \
-        "Avançado"
+        "Editar partiçoes (Avançado)"
   )
 
   botao=$?
   
-  [ "${method}" = "Avançado|" ] && {
+  [ "${method}" = "Editar partiçoes (Avançado)|" ] && {
      gparted;
      sudo partprobe || true
      getInstallMethod;
