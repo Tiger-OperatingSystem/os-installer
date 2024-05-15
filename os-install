@@ -506,6 +506,13 @@ function doInstallation(){
   ) | yad --progress --pulsate --auto-close --text="<big><b> Configurando o arquivo de troca em ${disk}, aguarde</b></big>\n\n"  --width=640  \
                                                          --borders=32 --undecorated --center --no-buttons --hide-text --on-top
 
+  (
+     echo "[LayoutList]"
+     echo "LayoutList=${keyboard_language}"
+     echo "Use=true"
+     echo "VariantList=${keyboard_variation}"
+  ) > /target
+
   yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
       --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Reiniciar":42 --button="Fechar":0 --on-top 
 
