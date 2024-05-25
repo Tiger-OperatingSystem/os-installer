@@ -496,8 +496,9 @@ function doInstallation(){
     exit 1
   }
 
-  mkdir -p "/target"
-  mount -o rw "${sys_part}" /target 
+  sudo mkdir -p "/target"
+  sudo mount -o rw "${sys_part}" /target 
+  
   (
      sudo fallocate -l 2G /target/swap
      sudo mkswap /target/swap
