@@ -509,7 +509,7 @@ function doInstallation(){
 
   sudo mkdir -p "/target/etc/skel/.config/"
   (
-     echo "[LayoutList]"
+     echo "[Layout]"
      echo "LayoutList=${keyboard_language}"
      echo "Use=true"
      echo "VariantList=${keyboard_variation}"
