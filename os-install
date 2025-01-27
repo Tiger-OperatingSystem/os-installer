@@ -388,8 +388,11 @@ function confirmOptions() {
      summary="${summary} - APAGAR todos os dados em ${sys_part}\n"
    }
    
-   data=$(yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:\n" --form --fixed --field="" --field="Fazer login automaticamente":CHK  \
-        --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n" "" "${2}" "${3}" --on-top )
+   data=$(yad --borders=32 --text="<big><b>É isso que deseja fazer?</b></big>\n${summary}\nDefina o nome desse computador na rede:" --form --fixed --field=""  \
+          --field=" ":LBL \
+          --field="Fazer login automaticamente":CHK \
+          --field="Impedir acesso a loja de apps pelo desktop":CHK \
+          --center --width=640 --height=480 --title="TigerOS 23 - Instalar sistema"  --button="Não, desejo mudar":42 --button="Sim, prosseguir":0 --separator="\n" "" "${2}" "${3}" --on-top )
 
   botao=$?
 
@@ -406,7 +409,7 @@ function confirmOptions() {
    host_name=$(echo "${data}" | sed -n 1p | tr -d '[:blank:]' )
 
    [ "${host_name}" = "" ] && {
-      confirmOptions "<b>Erro:</b> Nome do computador na rede não pode ficar em branco\n\n" "Tiger_Machine" $(echo "${data}" | sed -n 2p)
+      confirmOptions "\n<b>Erro:</b> Nome do computador na rede não pode ficar em branco\n\n" "Tiger_Machine" $(echo "${data}" | sed -n 2p)
       exit
    }
 
@@ -423,7 +426,8 @@ function confirmOptions() {
     host_name="${user_name_valid}"
   }
 
-   autologin=$(echo "${data}" | sed -n 2p)
+   autologin=$(echo "${data}" | sed -n 3p)
+   export hidediscovery=$(echo "${data}" | sed -n 4p)
 
   [ "${autologin}" = "TRUE" ] && {
     autouser="${user_name}"
@@ -433,6 +437,7 @@ function confirmOptions() {
   doInstallation
   exit
 }
+
 
 function doInstallation(){
   [ "${method}" = "Usar o disco inteiro|" ] && {
@@ -519,6 +524,34 @@ function doInstallation(){
   sudo cp "/target/etc/skel/.config/kxkbrc" "/target/home/${user_name}/.config/kxkbrc"
   sudo rm -f "/target/etc/skel"/*/"Instalar Sistema"*
   sudo rm -f "/target/home/${user_name}"/*/"Instalar Sistema"*
+
+  sudo mkdir -p "/target/usr/local/share/applications"
+  [ "${hidediscovery}" = "TRUE" ] && {
+     (
+        echo '[Desktop Entry]'
+        echo 'Exec=plasma-discover %F'
+        echo 'Icon=plasmadiscover'
+        echo 'Type=Application'
+        echo 'X-DocPath=plasma-discover/index.html'
+        echo 'InitialPreference=5'
+        echo 'NoDisplay=true'
+        echo 'Actions=Updates;'
+        echo 'SingleMainWindow=true'
+        echo 'Name=Software Center'
+        echo 'Categories=Qt;KDE;System;'
+        echo 'Icon=update-low'
+     ) | sudo tee "/target/usr/local/share/applications/org.kde.discover.desktop"
+
+     sudo rm "/target/var/lib/flatpak/repo/config"
+     sudo rm "/target/var/lib/flatpak/repo/flathub.trustedkeys.gpg"
+
+     (
+        echo '[core]'
+        echo 'repo_version=1'
+        echo 'mode=bare-user-only'
+        echo 'min-free-space-size=500MB'
+     ) | sudo tee "/target/var/lib/flatpak/repo/config"
+  }
 
   yad --borders=32 --text="<big><b>TigerOS 23 instalado com sucesso</b></big>\nRemova o dispositivo de instalação e reinicie\n" --form --fixed   \
       --center --width=640 --title="TigerOS 23 - Instalar sistema"  --button="Reiniciar":42 --button="Fechar":0 --on-top 
