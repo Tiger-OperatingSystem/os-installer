@@ -260,7 +260,7 @@ function getInstallMethod() {
   botao=$?
   
   [ "${method}" = "Editar partiçoes (Avançado)|" ] && {
-     gparted;
+     sudo -EH gparted;
      sudo partprobe || true
      getInstallMethod;
      exit
